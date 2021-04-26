@@ -29,6 +29,17 @@ public class Deck : MonoBehaviour
 
     private void InitCardValues()
     {
+        int u = 0;
+        for(int i = 0; i < 4; i++)
+        {
+            for (int o = 0; o < 13; o++)
+            {
+                values[u] = o+1;
+                Debug.Log(u + "         " + values[u] + faces[u].name);
+                u++;
+            }
+        }
+
         /*TODO:
          * Asignar un valor a cada una de las 52 cartas del atributo "values".
          * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
@@ -38,11 +49,32 @@ public class Deck : MonoBehaviour
 
     private void ShuffleCards()
     {
+        Debug.Log("suffle");
+        int randomNumber;
+        Sprite tempFaces;
+        int tempValues;
+        for(int i = 0; i < 52; i++)
+        {
+            randomNumber = Random.Range(0, 52);
+            tempFaces = faces[0];
+            faces[0] = faces[randomNumber];
+            faces[randomNumber] = tempFaces;
+            tempValues = values[0];
+            values[0] = values[randomNumber];
+            values[randomNumber] = tempValues;
+        }
+        for (int i = 0; i < 52; i++)
+        {
+            Debug.Log(faces[i].name + "         " + values[i]);
+
+        }
+        Debug.Log("FIN suffle");
+
         /*TODO:
          * Barajar las cartas aleatoriamente.
          * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
          * Si lo necesitas, puedes definir nuevos arrays.
-         */       
+         */
     }
 
     void StartGame()
