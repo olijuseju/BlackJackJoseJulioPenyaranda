@@ -92,15 +92,12 @@ public class Deck : MonoBehaviour
         if (cardIndex ==3)
         {
             probabilidad = 1/4;
-            Debug.Log(probabilidad.ToString());
-            Debug.Log("A ngel maric000n      " + valuesPlayer);
 
 
         }
         else if (cardIndex > 3)
         {
             int puntuacionDescubierta = dealer.GetComponent<CardHand>().cards[1].GetComponent<CardModel>().value;
-            Debug.Log("A ngel maric000n      " + valuesDealer);
         }
 
 
@@ -144,6 +141,18 @@ public class Deck : MonoBehaviour
         
         //Repartimos carta al jugador
         PushPlayer();
+
+        if (valuesPlayer > 21)
+        {
+            finalMessage.text = "Te has pasado, has perdido :(";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
+        }else if (valuesPlayer == 21)
+        {
+            finalMessage.text = "Blacjack! Has GANADO :D";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
+        }
         /*TODO:
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
          */
@@ -165,19 +174,19 @@ public class Deck : MonoBehaviour
         }
         //puntosDealer.text = dealer.GetComponent<CardHand>().points.ToString();
 
-        if (dealer.GetComponent<CardHand>().points == 21)
+        if (valuesDealer == 21)
         {
             finalMessage.text = "Blacjack! Has perdido :(";
         }
-        else if (dealer.GetComponent<CardHand>().points > 21)
+        else if (valuesDealer > 21)
+        {
+            finalMessage.text = "El dealer se ha pasado, has ganado :)";
+        }
+        else if (valuesDealer < valuesPlayer)
         {
             finalMessage.text = "Has ganado :)";
         }
-        else if (dealer.GetComponent<CardHand>().points < player.GetComponent<CardHand>().points)
-        {
-            finalMessage.text = "Has ganado :)";
-        }
-        else if (dealer.GetComponent<CardHand>().points == player.GetComponent<CardHand>().points)
+        else if (valuesDealer == valuesPlayer)
         {
             finalMessage.text = "Has empatado :/";
         }
@@ -203,6 +212,8 @@ public class Deck : MonoBehaviour
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();          
         cardIndex = 0;
+        valuesPlayer=0;
+        valuesDealer = 0;
         ShuffleCards();
         StartGame();
     }
