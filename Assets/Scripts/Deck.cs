@@ -9,8 +9,15 @@ public class Deck : MonoBehaviour
     public Button hitButton;
     public Button stickButton;
     public Button playAgainButton;
+    public Button apuesta10Button;
+    public Button apuesta100Button;
+    public Text BancaMessage;
+    public Text apuestaMessage;
     public Text finalMessage;
     public Text probMessage;
+    public Text probMessage1;
+    public Text probMessage2;
+
 
     public int[] values = new int[52];
     int cardIndex = 0;
@@ -19,8 +26,10 @@ public class Deck : MonoBehaviour
     int valuesDealer=0;
     int[] cardsPlayer = new int [50];
     int[] cardsDealer = new int [50];
-    private int round = 0;
+    int round = 0;
 
+    int banca = 1000;
+    int apuesta = 0;
 
     private void Awake()
     {    
@@ -78,6 +87,8 @@ public class Deck : MonoBehaviour
 
     void StartGame()
     {
+        apuesta = 0;
+        actualizarBanca();
         for (int i = 0; i < 2; i++)
         {
             PushDealer();
@@ -93,6 +104,44 @@ public class Deck : MonoBehaviour
             finalMessage.text = "Blacjack! Has GANADO :D";
             stickButton.interactable = false;
             hitButton.interactable = false;
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+            banca += apuesta * 2;
+            apuesta = 0;
+            actualizarBanca();
+        } else if (valuesDealer == 21)
+        {
+            finalMessage.text = "Blacjack! Has perdido :(";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+            banca += 0;
+            apuesta = 0;
+            actualizarBanca();
+        }
+        if (valuesPlayer > 21)
+        {
+            finalMessage.text = "Te has pasado, has perdido :(";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+            banca += 0;
+            apuesta = 0;
+            actualizarBanca();
+        }
+        else if (valuesDealer > 21)
+        {
+            finalMessage.text = "El dealer se ha pasado, has ganado :)";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+
+            banca += apuesta * 2;
+            apuesta = 0;
+            actualizarBanca();
         }
     }
 
@@ -114,7 +163,7 @@ public class Deck : MonoBehaviour
                 probabilidad = 0;
             }
 
-            //probMessage.text = (probabilidad * 100).ToString() + " %";
+            probMessage.text = (probabilidad * 100).ToString() + " %";
 
         }
 
@@ -132,7 +181,7 @@ public class Deck : MonoBehaviour
         {
             probabilidad2 = 0;
         }
-        probMessage.text = (probabilidad2 * 100).ToString() + " %";
+        probMessage1.text = (probabilidad2 * 100).ToString() + " %";
 
         // Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
 
@@ -159,7 +208,7 @@ public class Deck : MonoBehaviour
             probabilidadEntre17y21 = 0;
         }
 
-        probMessage.text = (probabilidadEntre17y21 * 100).ToString() + " %";
+        probMessage2.text = (probabilidadEntre17y21 * 100).ToString() + " %";
 
         /*TODO:
          * Calcular las probabilidades de:
@@ -207,11 +256,24 @@ public class Deck : MonoBehaviour
             finalMessage.text = "Te has pasado, has perdido :(";
             stickButton.interactable = false;
             hitButton.interactable = false;
-        }else if (valuesPlayer == 21)
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+
+            banca +=0;
+            apuesta = 0;
+            actualizarBanca();
+        }
+        else if (valuesPlayer == 21)
         {
             finalMessage.text = "Blacjack! Has GANADO :D";
             stickButton.interactable = false;
             hitButton.interactable = false;
+            apuesta100Button.interactable = false;
+            apuesta10Button.interactable = false;
+
+            banca += apuesta * 2;
+            apuesta = 0;
+            actualizarBanca();
         }
         /*TODO:
          * Comprobamos si el jugador ya ha perdido y mostramos mensaje
@@ -226,9 +288,11 @@ public class Deck : MonoBehaviour
          */
 
         hitButton.interactable = false;
+        apuesta100Button.interactable = false;
+        apuesta10Button.interactable = false;
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
 
-        while (dealer.GetComponent<CardHand>().points <= 16)
+        while (valuesDealer <= 16)
         {
             PushDealer();
         }
@@ -237,22 +301,42 @@ public class Deck : MonoBehaviour
         if (valuesDealer == 21)
         {
             finalMessage.text = "Blacjack! Has perdido :(";
+
+            banca += 0;
+            apuesta = 0;
+            actualizarBanca();
         }
         else if (valuesDealer > 21)
         {
             finalMessage.text = "El dealer se ha pasado, has ganado :)";
+
+            banca += apuesta * 2;
+            apuesta = 0;
+            actualizarBanca();
         }
         else if (valuesDealer < valuesPlayer)
         {
             finalMessage.text = "Has ganado :)";
+
+            banca += apuesta * 2;
+            apuesta = 0;
+            actualizarBanca();
         }
         else if (valuesDealer == valuesPlayer)
         {
             finalMessage.text = "Has empatado :/";
+
+            banca += apuesta;
+            apuesta = 0;
+            actualizarBanca();
         }
         else
         {
             finalMessage.text = "Has perdido :(";
+
+            banca += 0;
+            apuesta = 0;
+            actualizarBanca();
         }
         stickButton.interactable = false;
 
@@ -268,6 +352,9 @@ public class Deck : MonoBehaviour
     {
         hitButton.interactable = true;
         stickButton.interactable = true;
+
+        apuesta100Button.interactable = true;
+        apuesta10Button.interactable = true;
         finalMessage.text = "";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();          
@@ -278,5 +365,30 @@ public class Deck : MonoBehaviour
         ShuffleCards();
         StartGame();
     }
-    
+
+    public void Ap10()
+    {
+        if(banca > 10)
+        {
+
+            apuesta += 10;
+            banca -= 10;
+            actualizarBanca();
+        }
+    }
+    public void Ap100()
+    {
+        if(banca > 100)
+        {
+            apuesta += 100;
+            banca -= 100;
+            actualizarBanca();
+        }
+    }
+
+    private void actualizarBanca()
+    {
+        apuestaMessage.text = apuesta.ToString();
+        BancaMessage.text = banca.ToString();
+    }
 }
