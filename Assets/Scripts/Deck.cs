@@ -17,7 +17,11 @@ public class Deck : MonoBehaviour
 
     int valuesPlayer=0;
     int valuesDealer=0;
-       
+    int[] cardsPlayer = new int [50];
+    int[] cardsDealer = new int [50];
+    private int round = 0;
+
+
     private void Awake()
     {    
         InitCardValues();        
@@ -76,29 +80,44 @@ public class Deck : MonoBehaviour
     {
         for (int i = 0; i < 2; i++)
         {
-            PushPlayer();
             PushDealer();
-            /*TODO:
+            PushPlayer();
+            round++;
+            
+        }
+        /*TODO:
              * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
              */
+        if (valuesPlayer == 21)
+        {
+            finalMessage.text = "Blacjack! Has GANADO :D";
+            stickButton.interactable = false;
+            hitButton.interactable = false;
         }
     }
 
     private void CalculateProbabilities()
     {
-        Debug.Log(cardIndex);
         float probabilidad;
+        int casosPosibles;
         //- Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-        if (cardIndex ==3)
+        if (round != 0)
         {
-            probabilidad = 1/4;
+            int valoresVisiblesDealer = valuesDealer - cardsDealer[0];
+            casosPosibles = 13 - valuesPlayer + valoresVisiblesDealer;
+            probabilidad = casosPosibles/ 13f;
+            if (probabilidad > 1)
+            {
+                probabilidad = 1;
+            }else if (probabilidad < 0)
+            {
+                probabilidad = 0;
+            }
 
+            probMessage.text = (probabilidad * 100).ToString() + " %";
 
         }
-        else if (cardIndex > 3)
-        {
-            int puntuacionDescubierta = dealer.GetComponent<CardHand>().cards[1].GetComponent<CardModel>().value;
-        }
+
 
 
 
@@ -117,7 +136,7 @@ public class Deck : MonoBehaviour
          */
         dealer.GetComponent<CardHand>().Push(faces[cardIndex],values[cardIndex]);
         valuesDealer += values[cardIndex];
-
+        cardsDealer[round] = values[cardIndex];
         cardIndex++;        
     }
 
@@ -128,8 +147,9 @@ public class Deck : MonoBehaviour
          */
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
         valuesPlayer += values[cardIndex];
+        cardsPlayer[round] = values[cardIndex];
         cardIndex++;
-        //Debug.Log(valuesPlayer);
+        
         CalculateProbabilities();
     }       
 
@@ -213,6 +233,7 @@ public class Deck : MonoBehaviour
         dealer.GetComponent<CardHand>().Clear();          
         cardIndex = 0;
         valuesPlayer=0;
+        round = 0;
         valuesDealer = 0;
         ShuffleCards();
         StartGame();
