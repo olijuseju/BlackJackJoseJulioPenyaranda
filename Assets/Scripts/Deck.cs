@@ -114,12 +114,52 @@ public class Deck : MonoBehaviour
                 probabilidad = 0;
             }
 
-            probMessage.text = (probabilidad * 100).ToString() + " %";
+            //probMessage.text = (probabilidad * 100).ToString() + " %";
 
         }
 
+        //Probabilidad de que el jugador obtenga más de 21 si pide una carta
 
+        float probabilidad2;
+        int casosPosibles2;
+        casosPosibles2 = 13 - (21 - valuesPlayer);
+        probabilidad2 = casosPosibles2 / 13f;
+        if (probabilidad2 > 1)
+        {
+            probabilidad2 = 1;
+        }
+        else if (probabilidad2 < 0)
+        {
+            probabilidad2 = 0;
+        }
+        probMessage.text = (probabilidad2 * 100).ToString() + " %";
 
+        // Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
+
+        float probabilidadLlegarA17;
+        int casosPosiblesHasta17;
+        casosPosiblesHasta17 = 13 - (16 - valuesPlayer);
+        probabilidadLlegarA17 = casosPosiblesHasta17 / 13f;
+        if (probabilidadLlegarA17 > 1)
+        {
+            probabilidadLlegarA17 = 1;
+        }
+        else if (probabilidadLlegarA17 < 0)
+        {
+            probabilidadLlegarA17 = 0;
+        }
+
+        float probabilidadEntre17y21 = probabilidadLlegarA17 - probabilidad2;
+        if (probabilidadEntre17y21 > 1)
+        {
+            probabilidadEntre17y21 = 1;
+        }
+        else if (probabilidadEntre17y21 < 0)
+        {
+            probabilidadEntre17y21 = 0;
+        }
+
+        probMessage.text = (probabilidadEntre17y21 * 100).ToString() + " %";
 
         /*TODO:
          * Calcular las probabilidades de:
