@@ -352,7 +352,6 @@ public class Deck : MonoBehaviour
     {
         hitButton.interactable = true;
         stickButton.interactable = true;
-
         apuesta100Button.interactable = true;
         apuesta10Button.interactable = true;
         finalMessage.text = "";
