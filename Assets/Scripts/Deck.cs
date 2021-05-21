@@ -50,11 +50,20 @@ public class Deck : MonoBehaviour
         {
             for (int o = 0; o < 13; o++)
             {
-                values[u] = o+1;
-                u++;
+
+                if (o+1 >10)
+                {
+                    values[u] = 10;
+                    u++;
+                }
+                else
+                {
+
+                    values[u] = o + 1;
+                    u++;
+                }
             }
         }
-
         /*TODO:
          * Asignar un valor a cada una de las 52 cartas del atributo "values".
          * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
@@ -163,6 +172,11 @@ public class Deck : MonoBehaviour
                 probabilidad = 0;
             }
 
+            if((valuesPlayer - valoresVisiblesDealer) >= 10)
+            {
+                probabilidad = 0;
+            }
+
             probMessage.text = (probabilidad * 100).ToString() + " %";
 
         }
@@ -178,6 +192,10 @@ public class Deck : MonoBehaviour
             probabilidad2 = 1;
         }
         else if (probabilidad2 < 0)
+        {
+            probabilidad2 = 0;
+        }
+        if (valuesPlayer < 12)
         {
             probabilidad2 = 0;
         }
@@ -197,6 +215,11 @@ public class Deck : MonoBehaviour
         {
             probabilidadLlegarA17 = 0;
         }
+        if (valuesPlayer < 7)
+        {
+            probabilidadLlegarA17 = 0;
+        }
+
 
         float probabilidadEntre17y21 = probabilidadLlegarA17 - probabilidad2;
         if (probabilidadEntre17y21 > 1)
@@ -238,7 +261,7 @@ public class Deck : MonoBehaviour
         valuesPlayer += values[cardIndex];
         cardsPlayer[round] = values[cardIndex];
         cardIndex++;
-        
+        Debug.Log(valuesPlayer);
         CalculateProbabilities();
     }       
 
