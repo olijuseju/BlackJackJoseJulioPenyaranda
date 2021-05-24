@@ -50,17 +50,25 @@ public class Deck : MonoBehaviour
         {
             for (int o = 0; o < 13; o++)
             {
-
-                if (o+1 >10)
+                if (o+1 == 1)
                 {
-                    values[u] = 10;
+                    values[u] = 11;
                     u++;
                 }
                 else
                 {
 
-                    values[u] = o + 1;
-                    u++;
+                    if (o + 1 > 10)
+                    {
+                        values[u] = 10;
+                        u++;
+                    }
+                    else
+                    {
+
+                        values[u] = o + 1;
+                        u++;
+                    }
                 }
             }
         }
@@ -174,7 +182,14 @@ public class Deck : MonoBehaviour
 
             if((valuesPlayer - valoresVisiblesDealer) >= 10)
             {
-                probabilidad = 0;
+                if ((valuesPlayer - valoresVisiblesDealer) ==10)
+                {
+                    probabilidad = 1/13f;
+                }
+                else
+                {
+                    probabilidad = 0;
+                }
             }
 
             probMessage.text = (probabilidad * 100).ToString() + " %";
@@ -217,7 +232,15 @@ public class Deck : MonoBehaviour
         }
         if (valuesPlayer < 7)
         {
-            probabilidadLlegarA17 = 0;
+            if (valuesPlayer == 6)
+            {
+                probabilidadLlegarA17 = 1 / 13f;
+
+            }
+            else
+            {
+                probabilidadLlegarA17 = 0;
+            }
         }
 
 
@@ -247,7 +270,7 @@ public class Deck : MonoBehaviour
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
         dealer.GetComponent<CardHand>().Push(faces[cardIndex],values[cardIndex]);
-        valuesDealer += values[cardIndex];
+        valuesDealer = dealer.GetComponent<CardHand>().points;
         cardsDealer[round] = values[cardIndex];
         cardIndex++;        
     }
@@ -258,7 +281,7 @@ public class Deck : MonoBehaviour
          * Dependiendo de cómo se implemente ShuffleCards, es posible que haya que cambiar el índice.
          */
         player.GetComponent<CardHand>().Push(faces[cardIndex], values[cardIndex]/*,cardCopy*/);
-        valuesPlayer += values[cardIndex];
+        valuesPlayer = player.GetComponent<CardHand>().points;
         cardsPlayer[round] = values[cardIndex];
         cardIndex++;
         Debug.Log(valuesPlayer);
